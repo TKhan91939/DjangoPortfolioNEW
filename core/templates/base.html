@@ -1,0 +1,150 @@
+{% load static %}
+<!doctype html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Portfolio — Projects{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}A polished portfolio showcasing projects, code, and collaborators.{% endblock %}">
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        container: { center: true, screens: { lg: "1024px", xl: "1152px", "2xl": "1280px" } },
+        extend: {
+          fontFamily: { sans: ["Inter","ui-sans-serif","system-ui"], mono: ["JetBrains Mono","ui-monospace","SFMono-Regular"] },
+          boxShadow: { glow: "0 24px 80px -30px rgb(99 102 241 / 0.55)", soft: "0 12px 40px -24px rgb(0 0 0 / 0.35)" },
+          keyframes: {
+            float: { "0%,100%": { transform: "translateY(0px)" }, "50%": { transform: "translateY(-6px)" } },
+            shine: { "0%": { transform: "translateX(-100%)" }, "100%": { transform: "translateX(100%)" } }
+          },
+          animation: { float: "float 6s ease-in-out infinite" }
+        }
+      }
+    };
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark')
+    }
+  </script>
+  <style>
+    .mesh::before, .mesh::after{
+      content:""; position:absolute; inset:auto; pointer-events:none; filter:blur(60px);
+      border-radius:9999px; opacity:.35;
+    }
+    .mesh::before{ width:46rem; height:46rem; top:-10rem; left:50%; transform:translateX(-55%);
+      background: radial-gradient(55% 55% at 50% 50%, rgba(79,70,229,.75), rgba(236,72,153,.55) 60%, transparent 70%); }
+    .mesh::after{ width:38rem; height:38rem; bottom:-6rem; right:-10rem;
+      background: radial-gradient(55% 55% at 50% 50%, rgba(14,165,233,.55), rgba(147,51,234,.45) 60%, transparent 70%); }
+    .pretty-scroll::-webkit-scrollbar{ height:8px; width:8px }
+    .pretty-scroll::-webkit-scrollbar-thumb{ background: #bdbdbd44; border-radius:9999px }
+    .pretty-scroll:hover::-webkit-scrollbar-thumb{ background: #bdbdbd88 }
+    .ring-gradient{
+      position: relative;
+      background: linear-gradient(135deg,#e5e7eb55, #ffffffaa) padding-box,
+                  linear-gradient(135deg, rgba(79,70,229,.7), rgba(236,72,153,.65), rgba(59,130,246,.6)) border-box;
+      border: 1px solid transparent; border-radius: 1.3rem;
+    }
+    .avatar-ring{
+      background: linear-gradient(#fff,#fff) padding-box,
+                  linear-gradient(135deg, rgba(79,70,229,.8), rgba(236,72,153,.7)) border-box;
+      border: 2px solid transparent; border-radius: 9999px;
+    }
+    .dark .ring-gradient{
+      background: linear-gradient(135deg,#0b0b0b99, #151515aa) padding-box,
+                  linear-gradient(135deg, rgba(99,102,241,.8), rgba(236,72,153,.75), rgba(56,189,248,.7)) border-box;
+    }
+    .dark .avatar-ring{
+      background: linear-gradient(#0b0b0b,#0b0b0b) padding-box,
+                  linear-gradient(135deg, rgba(99,102,241,.9), rgba(236,72,153,.85)) border-box;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 selection:bg-indigo-500/20 selection:text-indigo-900">
+  <div class="mesh fixed inset-0 -z-10"></div>
+
+  <!-- Header / Nav -->
+  <header class="container pt-10 pb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 shadow-glow animate-float"></div>
+        <a href="/" class="text-2xl font-extrabold tracking-tight">Portfolio</a>
+      </div>
+
+      <!-- desktop nav -->
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="/projects/" class="px-3 py-1.5 rounded-xl border border-transparent hover:border-neutral-200 dark:hover:border-neutral-800 transition">Projects</a>
+        <a href="/about/" class="px-3 py-1.5 rounded-xl border border-transparent hover:border-neutral-200 dark:hover:border-neutral-800 transition">About</a>
+        <a href="/resume/" class="px-3 py-1.5 rounded-xl border border-transparent hover:border-neutral-200 dark:hover:border-neutral-800 transition">Resume</a>
+        <a href="/contact/" class="px-3 py-1.5 rounded-xl border border-transparent hover:border-neutral-200 dark:hover:border-neutral-800 transition">Contact</a>
+        <button id="theme-toggle" class="ml-2 rounded-xl px-3 py-1.5 border border-neutral-200 dark:border-neutral-800 hover:bg-white/60 dark:hover:bg-white/10 transition">
+          Toggle Theme
+        </button>
+      </nav>
+
+      <!-- mobile controls -->
+      <div class="md:hidden flex items-center gap-2">
+        <button id="theme-toggle-m" class="rounded-xl px-3 py-1.5 border border-neutral-200 dark:border-neutral-800 hover:bg-white/60 dark:hover:bg-white/10 transition">Theme</button>
+        <button id="menu-btn" aria-expanded="false" aria-controls="mobile-menu"
+                class="rounded-xl px-3 py-1.5 border border-neutral-200 dark:border-neutral-800 hover:bg-white/60 dark:hover:bg-white/10 transition">
+          Menu
+        </button>
+      </div>
+    </div>
+
+    <!-- mobile nav -->
+    <div id="mobile-menu" class="md:hidden mt-3 hidden">
+      <nav class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/60 p-2">
+        <a href="/projects/" class="block px-3 py-2 rounded-lg hover:bg-white/60 dark:hover:bg-white/10">Projects</a>
+        <a href="/about/" class="block px-3 py-2 rounded-lg hover:bg-white/60 dark:hover:bg-white/10">About</a>
+        <a href="/resume/" class="block px-3 py-2 rounded-lg hover:bg-white/60 dark:hover:bg-white/10">Resume</a>
+        <a href="/contact/" class="block px-3 py-2 rounded-lg hover:bg-white/60 dark:hover:bg-white/10">Contact</a>
+      </nav>
+    </div>
+
+    {% block hero %}
+    <div class="mt-8">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+        <span class="bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">Work that ships</span>
+      </h1>
+      <p class="mt-4 text-[15px] text-neutral-700 dark:text-neutral-300 max-w-2xl">
+        Clean UI, thoughtful UX, and solid code — with inline previews and contributor credits.
+      </p>
+    </div>
+    {% endblock %}
+  </header>
+
+  <main class="container pb-16">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-neutral-200/60 dark:border-neutral-800/60">
+    <div class="container py-10 text-sm text-neutral-500 dark:text-neutral-400">
+      <p>© {% now "Y" %} Your Name</p>
+    </div>
+  </footer>
+
+  <script>
+    // theme toggles
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.theme = isDark ? 'dark' : 'light';
+    }
+    document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+    document.getElementById('theme-toggle-m')?.addEventListener('click', toggleTheme);
+
+    // mobile menu
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden') === false;
+      menuBtn.setAttribute('aria-expanded', String(open));
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

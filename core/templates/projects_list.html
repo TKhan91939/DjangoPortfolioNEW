@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% block title %}Portfolio — Projects{% endblock %}
+{% block hero %}{% endblock %}
+
+{% block content %}
+<section>
+  <div class="grid gap-9 sm:grid-cols-2 lg:grid-cols-3">
+    {% for p in projects %}
+      <article class="relative p-[1px] rounded-[1.4rem] bg-gradient-to-br from-indigo-500/35 via-violet-500/35 to-fuchsia-500/35 hover:from-indigo-500/45 hover:via-violet-500/45 hover:to-fuchsia-500/45 transition">
+        <div class="ring-gradient shadow-soft overflow-hidden">
+          <!-- cover -->
+          <div class="relative aspect-[16/9] overflow-hidden">
+            {% if p.img %}
+              <img src="{{ p.img.url }}" alt="{{ p.name }}"
+                   class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04]" loading="lazy"
+                   onerror="this.style.display='none'">
+            {% else %}
+              <div class="absolute inset-0 bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900"></div>
+            {% endif %}
+            <div class="pointer-events-none absolute inset-0 translate-x-[-100%] bg-[linear-gradient(110deg,transparent,rgba(255,255,255,.35),transparent)] animate-[shine_1.6s_ease-in-out_infinite]"></div>
+
+            <!-- badges -->
+            <div class="absolute left-3 top-3 flex items-center gap-2">
+              {% if p.gist %}<span class="text-[11px] rounded-full bg-black/70 text-white px-2 py-0.5 dark:bg-white/20">Code</span>{% endif %}
+              {% if p.link %}<span class="text-[11px] rounded-full bg-black/70 text-white px-2 py-0.5 dark:bg-white/20">GitHub</span>{% endif %}
+            </div>
+          </div>
+
+          <div class="p-6">
+            <header class="flex items-start justify-between gap-4">
+              <div class="min-w-0">
+                <h3 class="text-xl font-extrabold leading-tight tracking-tight truncate">{{ p.name }}</h3>
+                {% if p.date %}<div class="mt-1 text-xs text-neutral-500">Updated {{ p.date }}</div>{% endif %}
+              </div>
+
+              {% if p.link %}
+                <a href="{{ p.link }}" target="_blank" rel="noopener"
+                   class="shrink-0 inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-sm
+                          border border-neutral-200 dark:border-neutral-800
+                          bg-white/85 dark:bg-neutral-900/60
+                          hover:shadow-glow hover:border-indigo-400 transition">
+                  <!-- GitHub icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.98 5.25.98 11.52c0 4.86 3.15 8.98 7.51 10.43.55.1.75-.24.75-.53 0-.26-.01-1.14-.02-2.07-3.05.66-3.7-1.3-3.7-1.3-.5-1.26-1.23-1.6-1.23-1.6-.99-.68.08-.67.08-.67 1.1.08 1.68 1.13 1.68 1.13.98 1.67 2.57 1.19 3.2.91.1-.71.38-1.19.69-1.47-2.44-.28-5.01-1.22-5.01-5.44 0-1.2.43-2.18 1.13-2.95-.11-.28-.49-1.4.11-2.92 0 0 .93-.3 3.04 1.13.88-.25 1.83-.37 2.77-.37s1.89.12 2.77.37c2.11-1.43 3.04-1.13 3.04-1.13.6 1.52.22 2.64.11 2.92.7.77 1.13 1.75 1.13 2.95 0 4.23-2.58 5.16-5.03 5.43.39.34.73 1.01.73 2.04 0 1.47-.01 2.66-.01 3.02 0 .29.2.64.76.53 4.35-1.45 7.49-5.57 7.49-10.43C23.02 5.25 18.27.5 12 .5z"/></svg>
+                  GitHub
+                </a>
+              {% endif %}
+            </header>
+
+            {% if p.description %}
+              <p class="mt-3 text-[15px] leading-relaxed text-neutral-700 dark:text-neutral-300">
+                {{ p.description }}
+              </p>
+            {% endif %}
+
+            {% with devs=p.dev.all %}
+            {% if devs %}
+              <div class="mt-5">
+                <div class="text-xs uppercase tracking-wide text-neutral-500 mb-2">Developers</div>
+                <ul class="flex flex-wrap gap-3">
+                  {% for d in devs %}
+                    <li class="inline-flex items-center gap-2 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/60 px-2 py-1">
+                      {% if d.img %}
+                        <img src="{{ d.img.url }}" alt="{{ d.first_name }} {{ d.last_name }}"
+                             class="avatar-ring h-8 w-8 rounded-full object-cover" />
+                      {% else %}
+                        <div class="avatar-ring h-8 w-8 rounded-full grid place-items-center text-[11px] font-semibold">
+                          {{ d.first_name|default:"?"|first|upper }}{{ d.last_name|default:"?"|first|upper }}
+                        </div>
+                      {% endif %}
+                      <span class="text-xs font-semibold">{{ d.first_name }} {{ d.last_name }}</span>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+            {% endwith %}
+
+            {% if p.gist %}
+              <div class="mt-6">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="text-xs uppercase tracking-wide text-neutral-500">Code</div>
+                  <div class="flex items-center gap-2">
+                    <button
+                      class="text-xs rounded-lg border border-neutral-200 dark:border-neutral-800 px-2 py-1 hover:bg-white/60 dark:hover:bg-white/10 transition"
+                      data-gist-modal="{{ forloop.counter }}"
+                      data-gist-url="{{ p.gist }}">
+                      View Code
+                    </button>
+                    <a href="{{ p.gist }}" target="_blank" 
+                       class="text-xs rounded-lg border border-neutral-200 dark:border-neutral-800 px-2 py-1 hover:bg-white/60 dark:hover:bg-white/10 transition">
+                      View on GitHub
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal -->
+              <div id="modal-{{ forloop.counter }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-glow max-w-5xl w-full mx-4 relative overflow-hidden max-h-[90vh]">
+                  <div class="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800">
+                    <h2 class="text-lg font-semibold">{{ p.name }} - Code</h2>
+                    <button class="text-sm px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:bg-white/60 dark:hover:bg-white/10 transition"
+                            data-gist-close="{{ forloop.counter }}">
+                      Close
+                    </button>
+                  </div>
+                  <div class="overflow-auto max-h-[75vh]"
+                       id="gist-holder-{{ forloop.counter }}">
+                    <!-- Gist content will be loaded here -->
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <p class="text-neutral-600 dark:text-neutral-300">No projects yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Extract gist ID from URL
+  function getGistId(url) {
+    const match = url.match(/gist\.github\.com\/(?:[^\/]+\/)?([a-f0-9]+)/);
+    return match ? match[1] : null;
+  }
+
+  // Load gist via JSONP
+  function loadGist(gistUrl, container) {
+    const gistId = getGistId(gistUrl);
+    if (!gistId) {
+      container.innerHTML = '<div class="p-6 text-red-600 dark:text-red-400">Invalid gist URL</div>';
+      return;
+    }
+
+    container.innerHTML = '<div class="p-6 text-gray-600 dark:text-gray-300 text-center">Loading code snippet...</div>';
+    
+    const callbackName = `gist_${gistId}_${Date.now()}`;
+    const script = document.createElement('script');
+    
+    window[callbackName] = function(data) {
+      if (data && data.div) {
+        container.innerHTML = data.div;
+        
+        // Add GitHub's gist stylesheet
+        if (data.stylesheet && !document.querySelector(`link[href="${data.stylesheet}"]`)) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = data.stylesheet;
+          document.head.appendChild(link);
+        }
+
+        // Style adjustments for better modal display
+        const gistEl = container.querySelector('.gist');
+        if (gistEl) {
+          gistEl.style.margin = '0';
+          gistEl.style.fontSize = '14px';
+          
+          // Remove GitHub footer/meta info for cleaner display
+          const metaEl = gistEl.querySelector('.gist-meta');
+          if (metaEl) metaEl.remove();
+        }
+      } else {
+        container.innerHTML = '<div class="p-6 text-red-600 dark:text-red-400">Failed to load gist</div>';
+      }
+      
+      // Cleanup
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+
+    script.onerror = function() {
+      container.innerHTML = '<div class="p-6 text-red-600 dark:text-red-400">Failed to load gist</div>';
+      delete window[callbackName];
+    };
+    
+    script.src = `https://gist.github.com/${gistId}.json?callback=${callbackName}`;
+    document.head.appendChild(script);
+  }
+
+  // Modal functionality
+  document.addEventListener('click', function(e) {
+    // Open modal
+    if (e.target.matches('[data-gist-modal]')) {
+      const id = e.target.getAttribute('data-gist-modal');
+      const modal = document.getElementById(`modal-${id}`);
+      const holder = document.getElementById(`gist-holder-${id}`);
+      const gistUrl = e.target.getAttribute('data-gist-url');
+      
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      
+      if (!holder.dataset.loaded) {
+        loadGist(gistUrl, holder);
+        holder.dataset.loaded = 'true';
+      }
+    }
+    
+    // Close modal
+    if (e.target.matches('[data-gist-close]')) {
+      const id = e.target.getAttribute('data-gist-close');
+      const modal = document.getElementById(`modal-${id}`);
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  });
+
+  // Close modal on backdrop click
+  document.addEventListener('click', function(e) {
+    if (e.target.matches('[id^="modal-"]')) {
+      e.target.classList.add('hidden');
+      e.target.classList.remove('flex');
+    }
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      });
+    }
+  });
+
+  // Reveal animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('article').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(16px)';
+    card.style.transition = 'all 0.6s ease-out';
+    observer.observe(card);
+  });
+</script>
+{% endblock %}

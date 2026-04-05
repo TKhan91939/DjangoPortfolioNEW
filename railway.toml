@@ -1,0 +1,2 @@
+[deploy]
+start = "gunicorn personal_website.wsgi"

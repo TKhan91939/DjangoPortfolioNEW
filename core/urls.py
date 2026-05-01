@@ -7,5 +7,6 @@ urlpatterns = [
     path("projects/", views.project_list, name="projects_list"), # Works at /projects/
     
     path("about/", views.about, name="about"),
+    path("resume/", views.resume, name="resume"),
     path("contact/", views.contact, name="contact"),
 ]

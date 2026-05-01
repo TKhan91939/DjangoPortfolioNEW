@@ -45,3 +45,36 @@ class Project(models.Model):
 # List display 
 # Jazmin 
 # drf
+
+class Resume(models.Model):
+    title = models.CharField(max_length=150, default="My Resume")
+    linkedin_url = models.URLField(blank=True, null=True)
+    resume_pdf = models.FileField(upload_to="resumes/")
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        managed = True
+        verbose_name = "Resume"
+        verbose_name_plural = "Resumes"
+
+
+class AboutPage(models.Model):
+    title = models.CharField(max_length=150, default="About Me")
+    bio = models.TextField()
+    favorite_movie = models.CharField(max_length=150, blank=True, null=True)
+    favorite_food = models.CharField(max_length=150, blank=True, null=True)
+    interests = models.TextField(blank=True, null=True, help_text="Enter one interest per line.")
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        managed = True
+        verbose_name = "About Page"
+        verbose_name_plural = "About Page"

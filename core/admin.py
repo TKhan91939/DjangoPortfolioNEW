@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Developer, Project
+from .models import Developer, Project, Resume, AboutPage
 from django.utils.html import format_html
 
 
@@ -25,5 +25,24 @@ class ProjAdmin(admin.ModelAdmin):
     def image(self, obj):
         return format_html('<img src="{}" width="200"/>', obj.img.url)
 
-    
+
+@admin.register(Resume)
+class ResumeAdmin(admin.ModelAdmin):
+    list_display = ("title", "updated_at", "is_active")
+
+
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+    list_display = ("title", "updated_at", "is_active")
+    fieldsets = (
+        ("Main Info", {
+            "fields": ("title", "bio", "is_active")
+        }),
+        ("Favorites", {
+            "fields": ("favorite_movie", "favorite_food")
+        }),
+        ("Interests", {
+            "fields": ("interests",)
+        }),
+    )
 

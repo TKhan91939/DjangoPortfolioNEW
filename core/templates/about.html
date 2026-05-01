@@ -7,33 +7,56 @@
   <article class="p-[1px] rounded-[1.4rem] bg-gradient-to-br from-indigo-500/35 via-violet-500/35 to-fuchsia-500/35">
     <div class="ring-gradient shadow-soft overflow-hidden">
       <header class="p-6 pb-0">
-        <h1 class="text-3xl font-extrabold tracking-tight">About Me</h1>
-        <p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">Get to know Talhah</p>
+        <h1 class="text-3xl font-extrabold tracking-tight">
+          {{ about_obj.title|default:"About Me" }}
+        </h1>
+        <p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+          Get to know Talhah
+        </p>
       </header>
 
       <div class="p-6 pt-4">
-        <p class="text-[15px] leading-relaxed text-neutral-700 dark:text-neutral-300">
-          Hello! My name is <strong>Talhah Khan</strong> and I am a Computer Science student at
-          <strong>Kennesaw State University</strong>. My hobbies include watching sports and movies,
-          going to the gym, practicing martial arts, and spending time with family.
-        </p>
+        {% if about_obj %}
+          <div class="text-[15px] leading-8 text-neutral-700 dark:text-neutral-300 space-y-4">
+            {% for paragraph in about_obj.bio.splitlines %}
+              {% if paragraph.strip %}
+                <p>{{ paragraph }}</p>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-[15px] text-neutral-500">
+            No about information added yet.
+          </p>
+        {% endif %}
 
         <div class="mt-6 grid gap-4 sm:grid-cols-2">
           <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/85 dark:bg-neutral-900/60 p-4">
             <div class="text-xs uppercase tracking-wide text-neutral-500 mb-2">Favorites</div>
             <ul class="space-y-2 text-sm">
-              <li><span class="font-semibold">Movie:</span> The Dark Knight (2008)</li>
-              <li><span class="font-semibold">Food:</span> Southwest burger</li>
+              <li>
+                <span class="font-semibold">Movie:</span>
+                {{ about_obj.favorite_movie|default:"Not added yet" }}
+              </li>
+              <li>
+                <span class="font-semibold">Food:</span>
+                {{ about_obj.favorite_food|default:"Not added yet" }}
+              </li>
             </ul>
           </div>
 
           <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/85 dark:bg-neutral-900/60 p-4">
             <div class="text-xs uppercase tracking-wide text-neutral-500 mb-2">Interests</div>
             <ul class="space-y-2 text-sm">
-              <li>Sports & films</li>
-              <li>Strength training & fitness</li>
-              <li>Martial arts</li>
-              <li>Quality time with family</li>
+              {% if about_obj and about_obj.interests %}
+                {% for interest in about_obj.interests.splitlines %}
+                  {% if interest.strip %}
+                    <li>{{ interest }}</li>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <li>No interests added yet.</li>
+              {% endif %}
             </ul>
           </div>
         </div>

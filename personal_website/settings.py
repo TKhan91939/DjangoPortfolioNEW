@@ -182,3 +182,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 X_FRAME_OPTIONS = "SAMEORIGIN"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://djangoportfolionew-production.up.railway.app",
+]

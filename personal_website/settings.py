@@ -184,5 +184,5 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://djangoportfolionew-production.up.railway.app",
+    "https://talhahsportfolio.up.railway.app/",
 ]
